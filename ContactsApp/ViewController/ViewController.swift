@@ -12,6 +12,9 @@ class ViewController: UIViewController {
     
     // Remote Outlets
     @IBOutlet weak var contactsTableView: UITableView!
+    @IBOutlet weak var reverseAlphabetFilterBarButton: UIBarButtonItem!
+    @IBOutlet weak var alphabeticalBarButtonItem: UIBarButtonItem!
+    
     
     //Local Variables
     var contactViewModels = [ContactsViewModel]()
@@ -19,6 +22,8 @@ class ViewController: UIViewController {
     var searchBarController: UISearchController!
     var searchStatus: Bool = false
     var searchtext = ""
+    var sectionContactModel = [[Contacts]]()
+    var firstLetterSorted = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +43,44 @@ class ViewController: UIViewController {
         searchBarController.delegate = self as? UISearchControllerDelegate
         searchBarController.searchBar.delegate = self
     }
+    
+    // Reverse Filter
+    @IBAction func reverseFilterAction(_ sender: Any) {
+        Service.shared.fetchContacts(completion: {(contacts, err) in
+            if let err = err
+            {
+                print("Error in fetching contacts, Description: \(err)")
+            }
+            
+            print(contacts as Any)
+            
+            self.contactViewModels = contacts?.map({return ContactsViewModel(contacts: $0)}) ?? []
+            
+            // Sorting the array Objects
+            self.contactViewModels = self.contactViewModels.sorted { $0.name > $1.name}
+            
+            let firstLetters = contacts?.map { $0.titleFirstLetter }
+            let uniqueFirstLetters = Array(Set(firstLetters!))
+            self.firstLetterSorted = uniqueFirstLetters.sorted()
+            self.firstLetterSorted.reverse()
+            
+            self.sectionContactModel = self.firstLetterSorted.map { firstLetter in
+                return (contacts?
+                    .filter { $0.titleFirstLetter == firstLetter }
+                    .sorted { $0.name > $1.name })!
+            }
+            
+            print("Section Contact model \(self.sectionContactModel)")
+            
+            self.contactsTableView.reloadData()
+        })
+    }
+    //Alphabetical Order Filter
+    @IBAction func alphabeticalOrderAction(_ sender: Any) {
+        fetchData()
+        contactsTableView.reloadData()
+    }
+    
     func fetchData()
     {
         Service.shared.fetchContacts(completion: {(contacts, err) in
@@ -53,7 +96,18 @@ class ViewController: UIViewController {
             // Sorting the array Objects
             self.contactViewModels = self.contactViewModels.sorted { $0.name < $1.name}
             
-            //adding a grouped Dictionary
+            let firstLetters = contacts?.map { $0.titleFirstLetter }
+            let uniqueFirstLetters = Array(Set(firstLetters!))
+            self.firstLetterSorted = uniqueFirstLetters.sorted()
+            
+            self.sectionContactModel = self.firstLetterSorted.map { firstLetter in
+                return (contacts?
+                    .filter { $0.titleFirstLetter == firstLetter }
+                    .sorted { $0.name < $1.name })!
+            }
+            
+            print("Section Contact model \(self.sectionContactModel)")
+            
             self.contactsTableView.reloadData()
         })
     }
@@ -73,7 +127,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
         }
         else
         {
-            return contactViewModels.count
+            return sectionContactModel[section].count
         }
         
     }
@@ -91,15 +145,35 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
         }
         else
         {
-            let contactsViewModel = contactViewModels[indexPath.row]
-            cell.contactViewModel = contactsViewModel
+            let contactsViewModel = sectionContactModel[indexPath.section][indexPath.row]
+            
+            cell.textLabel?.text = sectionContactModel[indexPath.section][indexPath.row].name
         }
         
         return cell
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        if searchStatus == true
+        {
+         return 1
+        }
+        else
+        {
+            return sectionContactModel.count
+        }
+        
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if searchStatus == true
+        {
+           return nil
+        }
+        else
+        {
+            return firstLetterSorted[section]
+        }
     }
     
     
@@ -132,5 +206,11 @@ extension ViewController : UISearchBarDelegate
         print(searchBarController.searchBar.text!)
         contactsTableView.reloadData()
     }
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.searchtext = ""
+        self.searchStatus = false
+        self.contactsTableView.reloadData()
+    }
 }
+
 

@@ -33,11 +33,21 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Contacts" id="7A4-cY-BXj">
-                        <barButtonItem key="leftBarButtonItem" title="A-Z" style="plain" id="93E-bm-kAz"/>
-                        <barButtonItem key="rightBarButtonItem" title="Z-A" id="qwW-L5-Beu"/>
+                        <barButtonItem key="leftBarButtonItem" title="A-Z" style="plain" id="93E-bm-kAz">
+                            <connections>
+                                <action selector="alphabeticalOrderAction:" destination="BYZ-38-t0r" id="jT2-nH-tdc"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Z-A" id="qwW-L5-Beu">
+                            <connections>
+                                <action selector="reverseFilterAction:" destination="BYZ-38-t0r" id="ni4-OQ-gDG"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="alphabeticalBarButtonItem" destination="93E-bm-kAz" id="XY8-2p-y3E"/>
                         <outlet property="contactsTableView" destination="GQ3-9h-Xh5" id="AyU-Ot-tF3"/>
+                        <outlet property="reverseAlphabetFilterBarButton" destination="qwW-L5-Beu" id="KFT-cV-IOt"/>
                         <outlet property="searchDisplayController" destination="DPL-xl-xWZ" id="de9-QM-J22"/>
                     </connections>
                 </viewController>

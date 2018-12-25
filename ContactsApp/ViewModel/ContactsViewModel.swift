@@ -20,6 +20,7 @@ struct ContactsViewModel
 {
     var name: String
     
+    
     init(contacts: Contacts)
     {
       self.name = contacts.name

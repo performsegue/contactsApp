@@ -17,6 +17,10 @@ struct Contacts: Decodable {
     let phone: String
     let website: String
     let company: Company
+    
+    var titleFirstLetter: String {
+        return String(self.name[self.name.startIndex]).uppercased()
+    }
 }
 
 struct Address: Decodable
