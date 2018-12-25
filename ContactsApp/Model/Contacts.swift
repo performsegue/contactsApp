@@ -18,6 +18,7 @@ struct Contacts: Decodable {
     let website: String
     let company: Company
     
+    //to Map the first Letter to display in sections
     var titleFirstLetter: String {
         return String(self.name[self.name.startIndex]).uppercased()
     }

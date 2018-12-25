@@ -32,12 +32,14 @@ class ViewController: UIViewController {
         addSearchbar()
         contactsTableView.delegate = self
         contactsTableView.dataSource = self
+        //Registering the cell to Tableview
         contactsTableView.register(contactCell.self, forCellReuseIdentifier: "contactsCell")
     }
     
+    //Adding search Bar by using Searchcontroller
     func addSearchbar()
     {
-        
+        //Displaying the search Results in same View Controller and Same table view
         searchBarController = UISearchController(searchResultsController: nil)
         self.navigationItem.searchController = searchBarController
         searchBarController.delegate = self as? UISearchControllerDelegate
@@ -78,7 +80,6 @@ class ViewController: UIViewController {
     //Alphabetical Order Filter
     @IBAction func alphabeticalOrderAction(_ sender: Any) {
         fetchData()
-        contactsTableView.reloadData()
     }
     
     func fetchData()
@@ -145,7 +146,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
         }
         else
         {
-            let contactsViewModel = sectionContactModel[indexPath.section][indexPath.row]
+            
+           // let contactsViewModel = sectionContactModel[indexPath.section][indexPath.row]
             
             cell.textLabel?.text = sectionContactModel[indexPath.section][indexPath.row].name
         }
@@ -175,6 +177,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
             return firstLetterSorted[section]
         }
     }
+    
+    
     
     
 }
