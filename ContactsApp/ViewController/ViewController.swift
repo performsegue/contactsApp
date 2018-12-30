@@ -38,6 +38,13 @@ class ViewController: UIViewController {
         contactsTableView.register(contactCell.self, forCellReuseIdentifier: "contactsCell")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if #available(iOS 11.0, *) {
+            navigationItem.hidesSearchBarWhenScrolling = false
+        }
+    }
+    
     //Adding search Bar by using Searchcontroller
     func addSearchbar()
     {
@@ -47,6 +54,7 @@ class ViewController: UIViewController {
         searchBarController.delegate = self as? UISearchControllerDelegate
         searchBarController.searchBar.delegate = self
     }
+    
     
     // Reverse Filter
     @IBAction func reverseFilterAction(_ sender: Any) {
