@@ -5,7 +5,7 @@ A simple Contacts App
 
 - Sorting the list Z-A & A-Z
 
-- Searching for the Names using MVVM (Tried and Working) (Note : Pull down the Navigation bar to reveal Searchbar)
+- Searching for the Names
 
 - Making a Network Request using Codable and Decodable.
 
