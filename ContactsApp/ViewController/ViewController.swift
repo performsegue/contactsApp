@@ -24,10 +24,12 @@ class ViewController: UIViewController {
     var searchtext = ""
     var sectionContactModel = [[Contacts]]()
     var firstLetterSorted = [String]()
+    var checkFilterSatus: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        self.navigationItem.leftBarButtonItem?.isEnabled = false
         fetchData()
         addSearchbar()
         contactsTableView.delegate = self
@@ -48,42 +50,39 @@ class ViewController: UIViewController {
     
     // Reverse Filter
     @IBAction func reverseFilterAction(_ sender: Any) {
-        Service.shared.fetchContacts(completion: {(contacts, err) in
-            if let err = err
-            {
-                print("Error in fetching contacts, Description: \(err)")
-            }
-            
-            print(contacts as Any)
-            
-            self.contactViewModels = contacts?.map({return ContactsViewModel(contacts: $0)}) ?? []
-            
-            // Sorting the array Objects
-            self.contactViewModels = self.contactViewModels.sorted { $0.name > $1.name}
-            
-            let firstLetters = contacts?.map { $0.titleFirstLetter }
-            let uniqueFirstLetters = Array(Set(firstLetters!))
-            self.firstLetterSorted = uniqueFirstLetters.sorted()
+        
+        if checkFilterSatus == false
+        {
+            self.sectionContactModel.reverse()
             self.firstLetterSorted.reverse()
-            
-            self.sectionContactModel = self.firstLetterSorted.map { firstLetter in
-                return (contacts?
-                    .filter { $0.titleFirstLetter == firstLetter }
-                    .sorted { $0.name > $1.name })!
-            }
-            
-            print("Section Contact model \(self.sectionContactModel)")
-            
-            self.contactsTableView.reloadData()
-        })
+            checkFilterSatus = true
+            self.navigationItem.leftBarButtonItem?.isEnabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = false
+        }
+        self.contactsTableView.reloadData()
+        
     }
     //Alphabetical Order Filter
     @IBAction func alphabeticalOrderAction(_ sender: Any) {
-        fetchData()
+        //self.fetchData()
+        
+        if checkFilterSatus == true
+        {
+            self.sectionContactModel.reverse()
+            self.firstLetterSorted.reverse()
+            self.checkFilterSatus = false
+            self.navigationItem.leftBarButtonItem?.isEnabled = false
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+        
+        self.contactsTableView.reloadData()
     }
     
     func fetchData()
     {
+        self.contactViewModels.removeAll()
+        self.firstLetterSorted.removeAll()
+        self.sectionContactModel.removeAll()
         Service.shared.fetchContacts(completion: {(contacts, err) in
             if let err = err
             {
@@ -96,7 +95,6 @@ class ViewController: UIViewController {
             
             // Sorting the array Objects
             self.contactViewModels = self.contactViewModels.sorted { $0.name < $1.name}
-            
             let firstLetters = contacts?.map { $0.titleFirstLetter }
             let uniqueFirstLetters = Array(Set(firstLetters!))
             self.firstLetterSorted = uniqueFirstLetters.sorted()
