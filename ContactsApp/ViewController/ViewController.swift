@@ -123,6 +123,19 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource
 {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if searchStatus == true
+        {
+            return 1
+        }
+        else
+        {
+            return sectionContactModel.count
+        }
+        
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchStatus == true
         {
@@ -161,17 +174,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
         return cell
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        if searchStatus == true
-        {
-         return 1
-        }
-        else
-        {
-            return sectionContactModel.count
-        }
-        
-    }
+   
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if searchStatus == true
@@ -184,7 +187,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
         }
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
     
     
 }
