@@ -18,12 +18,11 @@ class ViewController: UIViewController {
     
     //Local Variables
     var contactViewModels = [ContactsViewModel]()
-    var sectionArray = [sections]()
+    var sectionContactModel = [[Contacts]]()
+    var firstLetterSorted = [String]()
     var searchBarController: UISearchController!
     var searchStatus: Bool = false
     var searchtext = ""
-    var sectionContactModel = [[Contacts]]()
-    var firstLetterSorted = [String]()
     var checkFilterSatus: Bool = false
     
     override func viewDidLoad() {
@@ -61,12 +60,16 @@ class ViewController: UIViewController {
         
         if checkFilterSatus == false
         {
-            self.sectionContactModel.reverse()
-            self.firstLetterSorted.reverse()
-            checkFilterSatus = true
+            self.firstLetterSorted.sort { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending }
+            self.sectionContactModel.sort { $0[0].name > $1[0].name}
+            self.checkFilterSatus = true
             self.navigationItem.leftBarButtonItem?.isEnabled = true
             self.navigationItem.rightBarButtonItem?.isEnabled = false
         }
+        
+       // self.firstLetterSorted.sort()
+        self.firstLetterSorted.reverse()
+        
         self.contactsTableView.reloadData()
         
     }
@@ -76,16 +79,16 @@ class ViewController: UIViewController {
         
         if checkFilterSatus == true
         {
-            self.sectionContactModel.reverse()
-            self.firstLetterSorted.reverse()
+            self.firstLetterSorted.sort { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending }
+            self.sectionContactModel.sort { $0[0].name < $1[0].name}
             self.checkFilterSatus = false
             self.navigationItem.leftBarButtonItem?.isEnabled = false
             self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
-        
         self.contactsTableView.reloadData()
     }
     
+    //to fetch data from API
     func fetchData()
     {
         self.contactViewModels.removeAll()
@@ -185,6 +188,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource
         {
             return firstLetterSorted[section]
         }
+    }
+    
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return firstLetterSorted
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
