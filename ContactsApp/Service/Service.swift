@@ -16,7 +16,9 @@ class Service {
     {
         let urlString = "https://jsonplaceholder.typicode.com/users"
         guard let url = URL(string: urlString) else { return }
+        
         URLSession.shared.dataTask(with: url) { (data, resp, err) in
+            
             if let err = err {
                 completion(nil, err)
                 print("Failed to fetch Contacts:", err)

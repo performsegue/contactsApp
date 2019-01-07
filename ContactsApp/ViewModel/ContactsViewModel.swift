@@ -9,12 +9,6 @@
 import Foundation
 import UIKit
 
-struct sections
-{
-    let name: [String]
-    let letter: String
-}
-
 
 struct ContactsViewModel
 {

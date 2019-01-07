@@ -103,7 +103,8 @@ class ViewController: UIViewController {
         self.firstLetterSorted.removeAll()
         self.sectionContactModel.removeAll()
         Service.shared.fetchContacts(completion: {(contacts, err) in
-            if let err = err
+           
+             if let err = err
             {
                 print("Error in fetching contacts, Description: \(err)")
             }
